@@ -44,7 +44,7 @@ Skills
 ======
 * GIS and remote sensing: ArcGIS Pro, ArcGIS Online, QGIS, ENVI, Google Earth Engine, Pro, and Maps
 * Field practices: Strong tree identification, groundcover and vine identification, soil measurements (Munsell hue, penetrometer, O/A layer identification, layer depth, and soil texture), and YSI
-* Data management and display: R (RStudio), JavaScript, and Microsoft Office programs
+* Data management and display: R (RStudio), JavaScript, Python, and Microsoft Office programs
 * Laboratory practices: TSS filtration, bacterial membrane filtration, CFU analysis, autoclaving, and laboratory safety
 * Interpersonal: Troubleshooting as GIS Lab proctor, led ForestGEO data collection shifts, Assistant Manager of the Year (2022) for Burger King franchise, guided training efforts across various classes, surveys, and sampling projects
 
