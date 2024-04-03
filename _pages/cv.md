@@ -42,31 +42,32 @@ showing changes in forest patch health over time
   
 Skills
 ======
-* Skill 1
-* Skill 2
-  * Sub-skill 2.1
-  * Sub-skill 2.2
-  * Sub-skill 2.3
-* Skill 3
+* GIS and remote sensing: ArcGIS Pro, ArcGIS Online, QGIS, ENVI, Google Earth Engine, Pro, and Maps
+* Field practices: Strong tree identification, groundcover and vine identification, soil measurements (Munsell hue, penetrometer, O/A layer identification, layer depth, and soil texture), and YSI
+* Data management and display: R (RStudio), JavaScript, and Microsoft Office programs
+* Laboratory practices: TSS filtration, bacterial membrane filtration, CFU analysis, autoclaving, and laboratory safety
+* Interpersonal: Troubleshooting as GIS Lab proctor, led ForestGEO data collection shifts, Assistant Manager of the Year (2022) for Burger King franchise, guided training efforts across various classes, surveys, and sampling projects
 
-Publications
+Projects
 ======
-  <ul>{% for post in site.publications reversed %}
-    {% include archive-single-cv.html %}
-  {% endfor %}</ul>
+* Compositional changes of Ash species within UMBC urban forest patch - May 2023
+  * Self-led study to observe changes in Ash composition following invasion of Emerald Ash Borer. Configured primary data to join with previous surveys, identifying new growth within basal area of Ash. Results showed that Bitternut Hickory dominated the new growth composition by 21.6%.
+	
+* Stewardship effects on health of Baltimore urban forest patches - August 2023
+  * Presentation to consulting scientists - with UMBC and U.S. Forest Service - and city officials on trends found within Baltimore forest patches. Found correlation between increased stewardship with ecological health indicators such as species diversity, canopy invasion, and native species richness.
+
+* MODIS imagery analysis of glacial area loss relative to changes in latitude - December 2023
+  * Google Earth Engine and used to measure glacial area loss within U.S. National Parks corresponding to increases in latitude. Strong results (R2=0.87) indicated increased glacial resistance to global warming at higher latitudes.
   
-Talks
+Noteworthy Coursework
 ======
-  <ul>{% for post in site.talks reversed %}
-    {% include archive-single-talk-cv.html  %}
-  {% endfor %}</ul>
+* Quantitative Field Ecology 
+* Spatial Data Analysis and GIS Applications
+* Introduction to Geographic Information Systems 
+* Wetland Ecology 
+* Aquatic Ecology
+* Advanced Applications in Geographic Information
+Systems
+* Digital Image Processing for Environmental
+Applications
   
-Teaching
-======
-  <ul>{% for post in site.teaching reversed %}
-    {% include archive-single-cv.html %}
-  {% endfor %}</ul>
-  
-Service and leadership
-======
-* Currently signed in to 43 different slack teams
