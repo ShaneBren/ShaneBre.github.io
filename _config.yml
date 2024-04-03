@@ -21,7 +21,7 @@ repository               : "academicpages/academicpages.github.io"
 #               Additional customization can be done by editing /_includes/author-profile.html
 author:
   # Biographic information
-  avatar           : "profile.png"
+  avatar           : "Profile.png"
   name             : "Shane Brennan"
   pronouns         : "he/him"  
   bio              : "UMBC Undergraduate in Geography and Environmental Studies pursuing GIS certificate"
