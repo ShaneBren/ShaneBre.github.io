@@ -1,6 +1,6 @@
 ---
 layout: archive
-title: "CV"
+title: "Resume"
 permalink: /cv/
 author_profile: true
 redirect_from:
@@ -11,26 +11,34 @@ redirect_from:
 
 Education
 ======
-* Ph.D in Version Control Theory, GitHub University, 2018 (expected)
-* M.S. in Jekyll, GitHub University, 2014
-* B.S. in GitHub, GitHub University, 2012
+* B.S. in Environmental Science and Geography, University of Maryland, Baltimore County, expected graduation 2024
+   * Geographic Information Science certificate (4.0/4.0 GPA in certificate courses)
+   * 3.48 GPA overall
 
 Work experience
 ======
-* Spring 2024: Academic Pages Collaborator
-  * Github University
-  * Duties includes: Updates and improvements to template
-  * Supervisor: The Users
+* Urban Forest Patch Research Fellow June 2023 - August 2023
+  * Baltimore Green Space
+  * Duties includes:
+    * Collected groundcover species coverage, multiple soil metrics, and canopy invasion data to create various heat maps
+showing changes in forest patch health over time
+    * Creation of standardized forest health patch reports for each site to inform the community and city officials
+    * Collaboration with Baltimore Green Space, Baltimore City officials, and both UMBC and US Forest Service scientists
 
-* Fall 2015: Research Assistant
-  * Github University
-  * Duties included: Merging pull requests
-  * Supervisor: Professor Hub
+* Assistant Project Manager October 2022 - May 2023
+  * University of Maryland, Baltimore County
+  * Duties included:
+    * Our team collected data on over 7,000 trees: species identification, health assessment, geopositioning, and DBH
+    * Data entered and configured for ForestGEO international initiative on long-term forest changes
+    * Autonomously investigated long-term successional patterns within Knoll forest patch using ArcGIS Pro
 
-* Summer 2015: Research Assistant
-  * Github University
-  * Duties included: Tagging issues
-  * Supervisor: Professor Git
+* Laboratory Technician Intern  June 2022 - August 2022
+  * Anne Arundel Community College Environmental Center
+  * Duties included:                    
+    * Collected water samples for bacterial membrane filtration analysis to determine CFUs of enterococcus present 
+    * Entered data using Google Earth Pro to post swimming health advisories available to coastal communities
+    * Measured water metrics (pH, salinity, etc.) and total suspended solids (TSS) using filtration and analysis
+
   
 Skills
 ======
