@@ -17,6 +17,13 @@ Education
 
 Work experience
 ======
+* GIS Lab Proctor February 2024 - Present
+  * University of Maryland, Baltimore County
+  * Duties include:
+    * Assists in teaching GIS to introductory and intermediate GIS students by troubleshooting and guiding them through lab assignments 
+    * Involvement in running field geographical and ecological data collections for the introductory lab sections
+    * Additionally, assists in lab management by ensuring lab programs such as ArcGIS Pro, QGIS, and ENVI are operable as well as setting up remote access for some users.
+
 * Urban Forest Patch Research Fellow June 2023 - August 2023
   * Baltimore Green Space
   * Duties includes:
@@ -44,20 +51,20 @@ Skills
 ======
 * GIS and remote sensing: ArcGIS Pro, ArcGIS Online, QGIS, ENVI, Google Earth Engine, Pro, and Maps
 * Field practices: Strong tree identification, groundcover and vine identification, soil measurements (Munsell hue, penetrometer, O/A layer identification, layer depth, and soil texture), and YSI
-* Data management and display: R (RStudio), JavaScript, Python, and Microsoft Office programs
+* Data management and display: R, JavaScript, Python, and Microsoft Office programs
 * Laboratory practices: TSS filtration, bacterial membrane filtration, CFU analysis, autoclaving, and laboratory safety
 * Interpersonal: Troubleshooting as GIS Lab proctor, led ForestGEO data collection shifts, Assistant Manager of the Year (2022) for Burger King franchise, guided training efforts across various classes, surveys, and sampling projects
 
 Projects
 ======
 * Compositional changes of Ash species within UMBC urban forest patch - May 2023
-  * Self-led study to observe changes in Ash composition following invasion of Emerald Ash Borer. Configured primary data to join with previous surveys, identifying new growth within basal area of Ash. Results showed that Bitternut Hickory dominated the new growth composition by 21.6%.
+  * Self-led study to observe changes in Ash composition following invasion of Emerald Ash Borer. Configured primary data to join with previous surveys, identifying new growth within the basal area of Ash. Results showed that Bitternut Hickory dominated the new growth composition by 21.6%.
 	
-* Stewardship effects on health of Baltimore urban forest patches - August 2023
-  * Presentation to consulting scientists - with UMBC and U.S. Forest Service - and city officials on trends found within Baltimore forest patches. Found correlation between increased stewardship with ecological health indicators such as species diversity, canopy invasion, and native species richness.
+* Stewardship effects on the health of Baltimore urban forest patches - August 2023
+  * Presentation to consulting scientists - with UMBC and U.S. Forest Service - and city officials on trends found within Baltimore forest patches. Found a correlation between increased stewardship with ecological health indicators such as species diversity, canopy invasion, and native species richness.
 
 * MODIS imagery analysis of glacial area loss relative to changes in latitude - December 2023
-  * Google Earth Engine and used to measure glacial area loss within U.S. National Parks corresponding to increases in latitude. Strong results (R2=0.87) indicated increased glacial resistance to global warming at higher latitudes.
+  * Google Earth Engine used to measure glacial area loss within U.S. National Parks corresponding to increases in latitude. Strong results (R2=0.87) indicated increased glacial resistance to global warming at higher latitudes.
   
 Noteworthy Coursework
 ======
