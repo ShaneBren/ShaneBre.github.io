@@ -1,6 +1,6 @@
 ---
 title: "Ash Tree Succession Model"
-excerpt: "Analyzing changes in forest patch composition following the invasion of Emerald Ash Borer<br/><img src='(https://shanebren.github.io/images/All_trees.png)'>"
+excerpt: "Analyzing changes in forest patch composition following the invasion of Emerald Ash Borer (https://shanebren.github.io/images/All_trees.png)
 collection: portfolio
 ---
 
