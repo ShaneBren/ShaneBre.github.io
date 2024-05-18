@@ -1,7 +1,7 @@
 ---
 title: "Ash Tree Succession Model"
 excerpt: "In the academic year of 2022-2023 I served as an assistant project manager for the ForestGEO data initiative on long-term forest changes. Following data collection, I began to identify successional trends observed from the first 10 years of data.
-The full methodology can be found at the following [ArcGIS Online StoryMap](https://storymaps.arcgis.com/stories/591c609fe65048279708a75e9a180293) <br/><img src='../images/All_trees.png'>"
+The full methodology can be found at the following [ArcGIS Online StoryMap](https://storymaps.arcgis.com/stories/591c609fe65048279708a75e9a180293) <br/><img src='/images/All_trees.png'>"
 collection: portfolio
 ---
 
