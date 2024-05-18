@@ -16,10 +16,3 @@ After this preprocessing was completed, I then chose the Fraxinus genus as my fo
 From this subset of trees I created a buffer of the tree's basal area, a measure derived from the DBH information available. Then another subset was created of all of the new trees observed within the third inventory. Both the buffer of former Ash tree basal areas and the subset of new tree locations were used to generate a selection, and subset, of the successional trees within the Ash tree basal areas. 
 
 Results found that Bitternut Hickory dominated the succession at 21.6% of the species composition, followed by Black Cherry at 15.5% and Sugar Maple at 13.8% of the successional species composition. Seeing Black Cherry among the three highest successional species was of no surprise as Black Cherry comprises 15.6% of the Knoll forest patch - a percentage very similar to that of the successional species found. On the other hand, both Bitternut Hickory and Sugar Maple were already both dominant species within the Knoll but excelled at succeding in areas of former Ash trees.
-
-
-
-
-
-
-
