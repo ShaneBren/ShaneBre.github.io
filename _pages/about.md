@@ -1,6 +1,6 @@
 ---
 permalink: /
-title: "academicpages is a ready-to-fork GitHub Pages template for academic personal websites"
+title: "This is the profile of Shane Brennan, the best GIS person in the world"
 author_profile: true
 redirect_from: 
   - /about/
