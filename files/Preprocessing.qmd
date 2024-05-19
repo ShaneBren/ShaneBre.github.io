@@ -1,0 +1,135 @@
+---
+title: "Preprocessing"
+author: "Shane Brennan"
+format: html
+editor: visual
+date: 5/10/2024
+---
+
+# Setup
+
+```{r Library, message=FALSE, warning=FALSE}
+library(sf)
+library(readxl)
+library(dplyr)
+library(tmap)
+library(tidyr)
+library(openxlsx)
+library(terra)
+```
+
+# Preprocessing
+
+## Reading and Joining
+
+```{r ReadIn, warning=FALSE}
+Census1 <- read_xlsx("../data/originals/CensusOne.xlsx")
+Census23 <- read_xlsx("../data/originals/CensusTwoThree.xlsx")
+```
+
+```{r Joining, warning=FALSE}
+TotCensus <- full_join(Census1, Census23, 
+             by = join_by("Tag"))  
+
+TotCensus$DBH_cm_1[is.na(TotCensus$DBH_cm_1)] <- 0
+TotCensus$DBH_cm_2[is.na(TotCensus$DBH_cm_2)] <- 0
+TotCensus$DBH_cm_3[is.na(TotCensus$DBH_cm_3)] <- 0
+
+TotCensus <- TotCensus %>%
+  mutate(DupSite = coalesce(SITE.x, SITE.y))
+```
+
+In the last line I am addressing an issue with some points not having geometry. In a deleted chunk I identify the trees with the issues and write them out as an excel file in order to provide it Dr. Baker for troubleshooting.
+
+```{r UpdatedCoords}
+TotCensus <- TotCensus %>%
+  mutate(UTM_X_MostRecent = coalesce(UTM_X_3_GPS, UTM_X_3_Calc, UTM_X_2, UTM_X_1)) %>%
+  mutate(UTM_Y_MostRecent = coalesce(UTM_Y_3_GPS, UTM_Y_3_Calc, UTM_Y_2, UTM_Y_1)) %>%
+  filter(!is.na(UTM_X_MostRecent) & !is.na(UTM_Y_MostRecent))
+```
+
+Now with the data all being within the same place and fields with geographic data, we can now make this data a spatial object.
+
+```{r SF}
+Inven.123 <- st_as_sf(TotCensus, coords = c("UTM_X_MostRecent", "UTM_Y_MostRecent"), crs = 26918)
+```
+
+Here we address some duplicate tags and then remove them from the dataset.
+
+```{r Dups, results='hold'}
+Dup <- duplicated(Inven.123$Tag)
+sum(Dup)
+InvenDupped <- filter(Inven.123, Tag %in% Tag[duplicated(Inven.123$Tag)])
+InvenDupped$Tag
+
+Inven.Unique <- Inven.123[!Inven.123$FID %in% c(613, 587, 860, 5363, 7132, 7145), ]
+```
+
+With preprocessing wrapping up we can get rid of the large list of no longer needed reference fields. This fields are either processing steps to generate geographic information or fields that are not of interest in the following workflow.
+
+```{r DropFields}
+fielddrops <- c("FID", "STREET.x", "PLT_CRNT_1","Station_1","UTM_X_1","UTM_Y_1", "PLT_CRNT_2", "Station_2", "M1_3"      ,"M2_3","M3_3","M4_3","M5_3","STREET.y","Comments_3","date_census_3","Calc_X_m_3","Calc_Y_m_3","ROTX_3","ROTY_3",      "easting_origin","northing_origin","UTM_X_3_Calc","UTM_Y_3_Calc","UTM_X_3_GPS","UTM_Y_3_GPS",    
+ "UTM_X_2","UTM_Y_2","UTM_X_3","UTM_Y_3", "SITE.x", "SITE.y", "theta")
+
+Inven.processed <- Inven.Unique[, !colnames(Inven.Unique) %in% fielddrops]
+```
+
+We then are going to write out the progress thus far so it can be loaded into QGIS. Within QGIS we are doing a freehand selection to remove street trees along with trees that are no part of the continuous forest patches. Additionally, within the first inventory there was a forest patch where a parking lot was created prior to the second inventory. For the purposes of this study I remove these trees as well.
+
+```{r WriteOut1, warning=FALSE, message=FALSE, results='hide'}
+st_write(Inven.processed, "../data/creations/freehand/NonContinous.geojson", delete_dsn = TRUE)
+```
+
+```{r ReadList}
+list <- read.csv("../data/creations/freehand/NonContinousTags.csv", header = FALSE)
+
+Inventory <- Inven.processed[!Inven.processed$Tag %in% list$V1, ] 
+```
+
+```{r Reorder}
+order <- c("DupSite", "Tag","DBH_cm_1","DBH_cm_2","DBH_cm_3","Species_1", "Species_2", "Species_3",
+            "StemCode_1","StemCode_2","StemCode_3", "geometry")
+
+Inventory <- Inventory[,order]
+```
+
+# Calculating Measures
+
+Firstly we are going to assign the null values within the second and third inventory as zero. The null values appear because there was no dbh recorded in the following survey.
+```{r AllZero}
+Inventory <- Inventory %>%
+  mutate(DBH_cm_2 = replace(DBH_cm_2, DBH_cm_2 < 0, 0),
+         DBH_cm_3 = replace(DBH_cm_3, DBH_cm_3 < 0, 0)) %>%
+  mutate(DBH_change = DBH_cm_3 - DBH_cm_1)
+```
+
+
+Here we are going to make an assumption in our dataset: we are going to assume that the most recent inventory is the most accurate identification of the tree species. Logically thinking, after three inventories the species should have been correctly verified by now. However, I will also make a Spec_First to observe the dominance of species prior to being *ZDEAD*
+```{r SpecRecent}
+Inventory <- Inventory %>%
+ mutate(Spec_MostRecent = coalesce(Species_3, Species_2, Species_1)) %>%
+ mutate(Spec_First = coalesce(Species_1, Species_2, Species_3))
+```
+
+
+Silly Americans use the 1" in dbh = 1.5' critical root zone. We are using metric where 1 cm = 18 cm. Note that we are converting this to meters to be used for a buffer operation later.
+```{r CRZ}
+Inventory <- Inventory %>%
+  mutate(
+    CRZ_m_1 = DBH_cm_1 * 18 / 100,
+    CRZ_m_2 = DBH_cm_2 * 18 / 100,
+    CRZ_m_3 = DBH_cm_3 * 18 / 100)
+
+order <- c("DupSite", "Tag","DBH_cm_1","DBH_cm_2","DBH_cm_3","DBH_change","CRZ_m_1","CRZ_m_2","CRZ_m_3","Spec_MostRecent", "Spec_First", "Species_1", "Species_2","Species_3","StemCode_1","StemCode_2","StemCode_3", "geometry")
+
+Inventory <- Inventory[,order]
+```
+
+# Write-out
+
+Now that preprocessing is complete we are going to write out the file culminating the above work.
+```{r Writeout2, warning=FALSE, message=FALSE, results='hide'}
+st_write(Inventory, "../data/creations/Inventory.123.data.geojson", delete_dsn = TRUE)
+```
+
+

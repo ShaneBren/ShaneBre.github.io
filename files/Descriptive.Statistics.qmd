@@ -1,0 +1,327 @@
+---
+title: "Descriptive Statistics"
+author: "Shane Brennan"
+format: html
+editor: visual
+date: 05/15/2024
+---
+
+# Setup
+
+```{r Library, message=FALSE, warning=FALSE}
+library(sf)
+library(readxl)
+library(dplyr)
+library(tmap)
+library(tidyr)
+library(openxlsx)
+library(terra)
+library(ggplot2)
+library(forcats)
+```
+
+Clear out environment if coming from another script:
+
+```{r Clear}
+rm(list = ls())
+```
+
+# Reading in the data
+
+```{r STREAD, warning=FALSE, message=FALSE, results='hide'}
+Inventory <- st_read("../data/creations/Inventory123.data.geojson")
+```
+
+# Preprocessing
+
+For the purposes of developing some descriptive statistics we are going to drop the geometry, this allowing easier data manipulation following.
+
+```{r DROPGEO}
+Bare.Inventory <- st_drop_geometry(Inventory)
+```
+
+We are going to filter by survey:
+
+```{r BySurvey}
+Inven.1 <- Bare.Inventory %>%
+  filter(!is.na(Species_1))
+Inven.2 <- Bare.Inventory %>%
+  filter(!is.na(Species_2))
+Inven.3 <- Bare.Inventory %>%
+  filter(!is.na(Species_3))
+```
+
+Also we will record the top 25 species for each inventory to be used later
+
+```{r}
+Inven.1.25 <- Inven.1 %>%
+  count(Species_1, sort = TRUE) %>%
+  top_n(25, n) %>%
+  pull(Species_1)
+
+Inven.1.25.filter <- Inven.1 %>%
+  filter(Species_1 %in% Inven.1.25)
+
+Inven.2.25 <- Inven.2 %>%
+  count(Species_2, sort = TRUE) %>%
+  top_n(25, n) %>%
+  pull(Species_2)
+
+Inven.2.25.filter <- Inven.2 %>%
+  filter(Species_2 %in% Inven.2.25)
+
+Inven.3.25 <- Inven.3 %>%
+  count(Species_3, sort = TRUE) %>%
+  top_n(25, n) %>%
+  pull(Species_3)
+
+Inven.3.25.filter <- Inven.3 %>%
+  filter(Species_3 %in% Inven.3.25)
+```
+
+# Visualizations
+
+## Mapping
+
+### Survey Plots
+
+Seen here are the depictions created in the [Dandois et al. paper](https://esajournals.onlinelibrary.wiley.com/doi/10.1890/14-2246.1) which details both the methodology established for the census' as well as the setup of the forest plots.
+
+![Figure One: Image taken from Dandois et al., 2015 paper](images/DandoisGrids.PNG)
+
+### Continuous Tree Locations
+
+```{r Mapping, results='hold', message=FALSE}
+tmap_mode("view") +
+tm_basemap("Esri.WorldImagery") +
+  tm_shape(Inventory) + tm_dots("#06FFFB", size = 0.0005)
+```
+
+## Descriptive
+
+### Histograms
+
+```{r DBH1, warning=FALSE}
+ggplot() +
+  geom_histogram(data = Bare.Inventory, aes(x = DBH_cm_1), bins = 175, 
+                 color = "white", fill = "#1B4DC8") +
+  ggtitle("Distribution of DBH measurments (cm) from ForestGEO 2012/2013 Inventory 
+at UMBC") + 
+  scale_x_continuous(name = "DBH measurments (cm)", 
+                     breaks = seq(0, 70, 10), 
+                     limits = c(0, 70)) + 
+  scale_y_continuous(name = "Frequency", 
+                     breaks = seq(0, 550, 100),
+                     limits = c(0, 550)) +
+  theme_minimal()
+```
+
+```{r DBH2, warning=FALSE}
+ggplot() +
+  geom_histogram(data = Bare.Inventory, aes(x = DBH_cm_2), bins = 175, 
+                 color = "white", fill = "#1B4DC8") +
+  ggtitle("Distribution of DBH measurments (cm) from ForestGEO 2017/2018 Inventory 
+at UMBC") + 
+  scale_x_continuous(name = "DBH measurments (cm)", 
+                     breaks = seq(0, 70, 10), 
+                     limits = c(0, 70)) + 
+  scale_y_continuous(name = "Frequency", 
+                     breaks = seq(0, 550, 100),
+                     limits = c(0, 550)) +
+  theme_minimal()
+```
+
+```{r DBH3, warning=FALSE}
+ggplot() +
+  geom_histogram(data = Bare.Inventory, aes(x = DBH_cm_3), bins = 175, 
+                 color = "white", fill = "#1B4DC8") +
+  ggtitle("Distribution of DBH measurments (cm) from ForestGEO 2022/2023 Inventory 
+at UMBC") + 
+  scale_x_continuous(name = "DBH measurments (cm)", 
+                     breaks = seq(0, 70, 10), 
+                     limits = c(0, 70)) + 
+  scale_y_continuous(name = "Frequency", 
+                     breaks = seq(0, 550, 100),
+                     limits = c(0, 550)) +
+  theme_minimal()
+```
+
+### Mean, Median, and Range
+
+```{r Modalities1, results='hold'}
+Mean.1 <- mean(Bare.Inventory$DBH_cm_1) %>% print()
+Median.1 <- median(Bare.Inventory$DBH_cm_1) %>% print()
+Range.1 <- range(Bare.Inventory$DBH_cm_1) %>% print()
+```
+
+```{r Modalities2, results='hold'}
+Mean.2 <- mean(Bare.Inventory$DBH_cm_2) %>% print()
+Median.2 <- median(Bare.Inventory$DBH_cm_2) %>% print()
+Range.2 <- range(Bare.Inventory$DBH_cm_2) %>% print()
+```
+
+```{r Modalities3, results='hold'}
+Mean.3 <- mean(Bare.Inventory$DBH_cm_3) %>% print()
+Median.3 <- median(Bare.Inventory$DBH_cm_3) %>% print()
+Range.3 <- range(Bare.Inventory$DBH_cm_3) %>% print()
+```
+
+### Species List
+
+Here are all of the observed species throughout the three inventories
+
+```{r SpeciesList}
+unique(Bare.Inventory$Spec_MostRecent)
+```
+
+Species codes and their corresponding tree can be found here:
+
+![Figure One: Species Codes 1](images/SpeciesList1.PNG){fig-align="left"}
+
+![Figure Two: Species Codes 2](images/SpeciesList2.PNG){fig-align="left"}
+
+### Dominance
+
+Here are the relative dominance of the species found between the surveys:
+
+```{r Dominance1, warning=FALSE}
+ggplot() +
+  geom_bar(data = Inven.1, aes(x = fct_infreq(Species_1)), 
+           color = "white", fill = "#1B4DC8") +
+  ggtitle("Species Dominance from First Inventory") + 
+  scale_x_discrete(name = "Species Code") +
+  scale_y_continuous(name = "Number of Observations",
+                   breaks = seq(0, 1100, 200), 
+                   limits = c(0, 1100)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+```{r Dominance2, warning=FALSE}
+ggplot() +
+  geom_bar(data = Inven.2, aes(x = fct_infreq(Species_2)), 
+           color = "white", fill = "#1B4DC8") +
+  ggtitle("Species Dominance from Second Inventory") + 
+  scale_x_discrete(name = "Species Code") +
+  scale_y_continuous(name = "Number of Observations",
+                   breaks = seq(0, 1100, 200), 
+                   limits = c(0, 1100)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+```{r Dominance3, warning=FALSE}
+ggplot() +
+  geom_bar(data = Inven.3, aes(x = fct_infreq(Species_3)), 
+           color = "white", fill = "#1B4DC8") +
+  ggtitle("Species Dominance from Third Inventory") + 
+  scale_x_discrete(name = "Species Code") +
+  scale_y_continuous(name = "Number of Observations",
+                   breaks = seq(0, 1100, 200), 
+                   limits = c(0, 1100)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+Here is a condensed view of just the top 25 species by code:
+
+```{r Dominance1.25}
+ggplot() +
+  geom_bar(data = Inven.1.25.filter, aes(x = fct_infreq(Species_1)), 
+           color = "white", fill = "#1B4DC8") +
+  ggtitle("Species Dominance of Top 25 from First Inventory") + 
+  scale_x_discrete(name = "Species Code") +
+  scale_y_continuous(name = "Number of Observations",
+                   breaks = seq(0, 1100, 200), 
+                   limits = c(0, 1100)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+```{r Dominance2.25}
+ggplot() +
+  geom_bar(data = Inven.2.25.filter, aes(x = fct_infreq(Species_2)), 
+           color = "white", fill = "#1B4DC8") +
+  ggtitle("Species Dominance of Top 25 from Second Inventory") + 
+  scale_x_discrete(name = "Species Code") +
+  scale_y_continuous(name = "Number of Observations",
+                   breaks = seq(0, 1100, 200), 
+                   limits = c(0, 1100)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+```{r Dominance3.25}
+ggplot() +
+  geom_bar(data = Inven.3.25.filter, aes(x = fct_infreq(Species_3)), 
+           color = "white", fill = "#1B4DC8") +
+  ggtitle("Species Dominance of Top 25 from Third Inventory") + 
+  scale_x_discrete(name = "Species Code") +
+  scale_y_continuous(name = "Number of Observations",
+                   breaks = seq(0, 1100, 200), 
+                   limits = c(0, 1100)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+### Species Characteristics
+
+Reading in the species subsets from the preprocessing:
+
+```{r SpeciesReadIn, warning=FALSE, message=FALSE, results='hide'}
+ash <- st_read("../data/creations/select/ash.geojson")
+cherry <- st_read("../data/creations/select/cherry.geojson")
+hickory <- st_read("../data/creations/select/hickory.geojson")
+maple <- st_read("../data/creations/select/maple.geojson")
+oak <- st_read("../data/creations/select/oak.geojson")
+nonnat <- st_read("../data/creations/select/nonnative.geojson")
+```
+
+First lets see the total number of stems and then the number of alive trees within each inventory:
+
+```{r CountSpecies, results='hold'}
+ash %>% nrow() %>% cat("-> number of unique Ash trees across three inventories \n")
+ash %>% filter(DBH_cm_1 > 0) %>% nrow() %>% cat("-> number of alive Ash trees in first inventory \n")
+ash %>% filter(DBH_cm_2 > 0) %>% nrow() %>% cat("-> number of alive Ash trees in second inventory \n")
+ash %>% filter(DBH_cm_3 > 0) %>% nrow() %>% cat("-> number of alive Ash trees in third inventory \n")
+cat("\n")
+cherry %>% nrow() %>% cat("-> number of unique Cherry trees across three inventories \n")
+cherry %>% filter(DBH_cm_1 > 0) %>% nrow() %>% cat("-> number of alive Cherry trees in first inventory \n")
+cherry %>% filter(DBH_cm_2 > 0) %>% nrow() %>% cat("-> number of alive Cherry trees in second inventory \n")
+cherry %>% filter(DBH_cm_3 > 0) %>% nrow() %>% cat(" -> number of alive Cherry trees in third inventory \n")
+cat("\n")
+hickory %>% nrow() %>% cat("-> number of unique Hickory trees across three inventories \n")
+hickory %>% filter(DBH_cm_1 > 0) %>% nrow() %>% cat("-> number of alive Hickory trees in first inventory \n")
+hickory %>% filter(DBH_cm_2 > 0) %>% nrow() %>% cat("-> number of alive Hickory trees in second inventory \n")
+hickory %>% filter(DBH_cm_3 > 0) %>% nrow() %>% cat("-> number of alive Hickory trees in third inventory \n")
+cat("\n")
+maple %>% nrow() %>% cat("-> number of unique Maple trees across three inventories \n")
+maple %>% filter(DBH_cm_1 > 0) %>% nrow() %>% cat("-> number of alive Maple trees in first inventory \n")
+maple %>% filter(DBH_cm_2 > 0) %>% nrow() %>% cat("-> number of alive Maple trees in second inventory \n")
+maple %>% filter(DBH_cm_3 > 0) %>% nrow() %>% cat("-> number of alive Maple trees in third inventory \n")
+cat("\n")
+oak %>% nrow() %>% cat("-> number of unique Oak trees across three inventories \n")
+oak %>% filter(DBH_cm_1 > 0) %>% nrow() %>% cat("-> number of alive Oak trees in first inventory \n")
+oak %>% filter(DBH_cm_2 > 0) %>% nrow() %>% cat("-> number of alive Oak trees in second inventory \n")
+oak %>% filter(DBH_cm_3 > 0) %>% nrow() %>% cat("-> number of alive Oak trees in third inventory \n")
+cat("\n")
+nonnat %>% nrow() %>% cat("-> number of unique Non-Native trees across three inventories \n")
+nonnat %>% filter(DBH_cm_1 > 0) %>% nrow() %>% cat("-> number of alive Non-Native trees in first inventory \n")
+nonnat %>% filter(DBH_cm_2 > 0) %>% nrow() %>% cat("-> number of alive Non-Native trees in second inventory \n")
+nonnat %>% filter(DBH_cm_3 > 0) %>% nrow() %>% cat("-> number of alive Non-Native trees in third inventory \n")
+```
+
+::: callout-note
+The statistics involving Ash Succession - the collective objective of these workflows - will be demonstrated in the *Ash.Succession.qmd* document
+:::
+
+# Write-out
+
+After these descriptives, I am going to `write.csv` out the filtered inventories.
+
+```{r WriteOuts}
+write.csv(Inven.1, "../data/creations/individual/Inven.1.csv")
+write.csv(Inven.2, "../data/creations/individual/Inven.2.csv")
+write.csv(Inven.3, "../data/creations/individual/Inven.3.csv")
+```
+

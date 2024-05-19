@@ -1,0 +1,199 @@
+---
+title: "Species Selections"
+author: "Shane Brennan"
+format: html
+editor: visual
+date: 05/18/2024
+---
+
+# Setup
+
+```{r Library, message=FALSE, warning=FALSE}
+library(sf)
+library(readxl)
+library(dplyr)
+library(tmap)
+library(tidyr)
+library(openxlsx)
+library(terra)
+```
+
+Clear out environment if coming from another script:
+
+```{r Clear}
+rm(list = ls())
+```
+
+# Reading in the data
+
+```{r STREAD, warning=FALSE, message=FALSE, results='hide'}
+Inventory <- st_read("../data/creations/Inventory123.data.geojson")
+```
+
+# Selecting Species of Interest
+
+```{r TreeTypes}
+Ash <- c("FRAM", "FRPE", "FRSPP")
+Oak <- c("QUAL", "QUAM2", "QUCO", "QUFA", "QUMA2", "QUPA", "QUPH", "QUPR", "QURU", "QUSPP", "QUVE")
+Maple <- c("ANCE", "ACPL", "ACRU", "ACSA3")
+Hickory <- c("CACA", "CACO", "CADE", "CAGL", "CATO")
+Cherry <- c("PRSE", "PRAV")
+NonNat <- c("ACPL", "AIAL", "ALJU", "COKO2", "COMA21", "ELAN", "ELUM", "EUAL", "GIBI",
+            "LAIN", "LIAM", "MASY", "MOAL", "OSVI", "PATO", "PIAB", "PITH", "PYCA", "PYCO",
+            "VIPR", "VIRH", "PRSE3", "ZESE80")
+```
+
+## Ash Trees
+
+Now we are going to find the total number of Ash trees which have died, indicated by 0 DBH being observed in the third inventory.
+
+```{r AshDeath, warning=FALSE}
+ash.Herb <- Inventory %>%
+  filter(DupSite == "HR") %>%
+  filter(Spec_MostRecent %in% Ash)
+ash.Knoll <- Inventory %>%
+  filter(DupSite == "KN") %>%
+  filter(Spec_MostRecent %in% Ash)
+ash.All <- Inventory %>%
+  filter(Spec_MostRecent %in% Ash)
+```
+
+
+Lets inspect the Ash tree locations:
+```{r AshLocations, message=FALSE}
+tmap_mode("view") +
+tm_basemap(server = "OpenStreetMap") +
+  tm_shape(ash.Herb) + tm_dots("red", size = 0.07) +
+  tm_shape(ash.Knoll) + tm_dots("blue", size = 0.07) +
+  tm_shape(ash.All) + tm_dots("yellow")
+```
+
+## Oak Trees
+
+```{r Oaks, warning=FALSE}
+oak.Herb <- Inventory %>%
+  filter(DupSite == "HR") %>%
+  filter(Spec_MostRecent %in% Oak)
+oak.Knoll <- Inventory %>%
+  filter(DupSite == "KN") %>%
+  filter(Spec_MostRecent %in% Oak)
+oak.All <- Inventory %>%
+  filter(Spec_MostRecent %in% Oak)
+```
+
+
+Lets inspect the Oak tree locations:
+```{r OakLocations, message=FALSE}
+tmap_mode("view") +
+tm_basemap(server = "OpenStreetMap") +
+  tm_shape(oak.Herb) + tm_dots("red", size = 0.07) +
+  tm_shape(oak.Knoll) + tm_dots("blue", size = 0.07) +
+  tm_shape(oak.All) + tm_dots("yellow")
+```
+
+## Maple Trees
+
+```{r Maples, warning=FALSE}
+map.Herb <- Inventory %>%
+  filter(DupSite == "HR") %>%
+  filter(Spec_MostRecent %in% Maple)
+map.Knoll <- Inventory %>%
+  filter(DupSite == "KN") %>%
+  filter(Spec_MostRecent %in% Maple)
+map.All <- Inventory %>%
+  filter(Spec_MostRecent %in% Maple)
+```
+
+
+Lets inspect the Maple tree locations:
+```{r MaplesLocations, message=FALSE}
+tmap_mode("view") +
+tm_basemap(server = "OpenStreetMap") +
+  tm_shape(map.Herb) + tm_dots("red", size = 0.07) +
+  tm_shape(map.Knoll) + tm_dots("blue", size = 0.07) +
+  tm_shape(map.All) + tm_dots("yellow")
+```
+
+## Hickory Trees
+
+```{r Hickory, warning=FALSE}
+hic.Herb <- Inventory %>%
+  filter(DupSite == "HR") %>%
+  filter(Spec_MostRecent %in% Hickory)
+hic.Knoll <- Inventory %>%
+  filter(DupSite == "KN") %>%
+  filter(Spec_MostRecent %in% Hickory)
+hic.All <- Inventory %>%
+  filter(Spec_MostRecent %in% Hickory)
+```
+
+
+Lets inspect the Hickory tree locations:
+```{r HickoryLocations, message=FALSE}
+tmap_mode("view") +
+tm_basemap(server = "OpenStreetMap") +
+  tm_shape(hic.Herb) + tm_dots("red", size = 0.07) +
+  tm_shape(hic.Knoll) + tm_dots("blue", size = 0.07) +
+  tm_shape(hic.All) + tm_dots("yellow")
+```
+
+## Cherry Trees
+
+```{r Cherries, warning=FALSE}
+che.Herb <- Inventory %>%
+  filter(DupSite == "HR") %>%
+  filter(Spec_MostRecent %in% Cherry)
+che.Knoll <- Inventory %>%
+  filter(DupSite == "KN") %>%
+  filter(Spec_MostRecent %in% Cherry)
+che.All <- Inventory %>%
+  filter(Spec_MostRecent %in% Cherry)
+```
+
+
+Lets inspect the Cherry tree locations:
+```{r CherryLocations, message=FALSE}
+tmap_mode("view") +
+tm_basemap(server = "OpenStreetMap") +
+  tm_shape(che.Herb) + tm_dots("red", size = 0.07) +
+  tm_shape(che.Knoll) + tm_dots("blue", size = 0.07) +
+  tm_shape(che.All) + tm_dots("yellow")
+```
+
+
+## Non-Native Trees
+
+```{r NonNats, warning=FALSE}
+non.Herb <- Inventory %>%
+  filter(DupSite == "HR") %>%
+  filter(Spec_MostRecent %in% NonNat)
+non.Knoll <- Inventory %>%
+  filter(DupSite == "KN") %>%
+  filter(Spec_MostRecent %in% NonNat)
+non.All <- Inventory %>%
+  filter(Spec_MostRecent %in% NonNat)
+```
+
+
+Lets inspect the Maple tree locations:
+```{r NonNatLocations, message=FALSE}
+tmap_mode("view") +
+tm_basemap(server = "OpenStreetMap") +
+  tm_shape(non.Herb) + tm_dots("red", size = 0.07) +
+  tm_shape(non.Knoll) + tm_dots("blue", size = 0.07) +
+  tm_shape(non.All) + tm_dots("yellow")
+```
+
+# Writing Results Out
+
+```{r WriteOut, message=FALSE, results='hide', warning=FALSE}
+st_write(ash.All, "../data/creations/select/ash.geojson", delete_dsn = TRUE)
+st_write(oak.All, "../data/creations/select/oak.geojson", delete_dsn = TRUE)
+st_write(map.All, "../data/creations/select/maple.geojson", delete_dsn = TRUE)
+st_write(hic.All, "../data/creations/select/hickory.geojson", delete_dsn = TRUE)
+st_write(che.All, "../data/creations/select/cherry.geojson", delete_dsn = TRUE)
+st_write(non.All, "../data/creations/select/nonnative.geojson", delete_dsn = TRUE)
+```
+
+
+

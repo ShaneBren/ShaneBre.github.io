@@ -1,0 +1,186 @@
+---
+title: "Ash.Succession"
+author: "Shane Brennan"
+format: html
+editor: visual
+date: 05/18/2024
+---
+
+# Setup
+
+```{r Library, message=FALSE, warning=FALSE}
+library(sf)
+library(readxl)
+library(dplyr)
+library(tmap)
+library(tidyr)
+library(openxlsx)
+library(terra)
+library(ggplot2)
+library(forcats)
+library(viridis)
+```
+
+Clear out environment if coming from another script:
+
+```{r Clear}
+rm(list = ls())
+```
+
+# Reading in the data
+
+```{r STREAD, warning=FALSE, message=FALSE, results='hide'}
+Inventory <- st_read("../data/creations/Inventory123.data.geojson")
+ash <- st_read("../data/creations/select/ash.geojson")
+```
+
+# Ash Succession
+
+The nomenclature for these variables is **Health Status**.**Genus / Subset**.**Survey Recorded Dead**. Importantly, we also need to make sure the .3 variable does not contain the already dead ones from .2 in order to make sure we are accurately calling the trees which have died from the second to third inventory.
+
+```{r SelectDeadAshes}
+d.ash.2 <- ash %>%
+  filter(DBH_cm_2 == 0)
+d.ash.3 <- ash %>%
+  filter(DBH_cm_2 > 0) %>%
+  filter(DBH_cm_3 == 0)
+```
+
+Now to subset trees that are new within each survey; nomenclature for these variables is new.**Survey Discovered**.
+
+```{r SelectNewGrowth}
+new.2 <- Inventory %>%
+  filter(DBH_cm_1 == 0) %>%
+  filter(DBH_cm_2 > 0)
+new.3 <- Inventory %>%
+  filter(DBH_cm_1 == 0)  %>%
+  filter(DBH_cm_2 == 0)  %>%
+  filter(DBH_cm_3 > 0)
+```
+
+Now we are making CRZ buffers for the Ash trees based on the last inventory present; nomenclature for these variables is **Genus / Subset**.buffer.**Last present CRZ**.
+
+```{r BufferCRZ}
+ash.buffer.1  <- st_buffer(d.ash.2, dist = d.ash.2$CRZ_m_1) %>% st_union() 
+ash.buffer.2  <- st_buffer(d.ash.3, dist = d.ash.3$CRZ_m_2) %>% st_union()
+```
+
+Because trees do not always grow in time for the next inventory, we are going to `rbind` the new trees together in order to accurately select all of the new trees which have grown with the CRZ of former ash trees.
+
+```{r Unionize, warning=FALSE}
+new.23 <- rbind(new.3, new.2)
+```
+
+Now we are using those buffers to find the trees which have grown in the wake of an Ash trees death. Remember: successional species of the second survey will contain both trees from the second and third inventory as a tree succeeding a dead tree from the second inventory will not necessarily have a tree within the range of the inventory protocol yet.
+
+```{r SelectFromBuffers, warning=FALSE}
+ash.succ.2  <- st_intersection(new.23, ash.buffer.1)
+ash.succ.3  <- st_intersection(new.3, ash.buffer.2)
+```
+
+```{r BufferViewing, message=FALSE}
+tmap_mode("view") +
+tm_basemap(server = "OpenStreetMap") +
+  tm_shape(ash.buffer.2) + tm_polygons("#0D417F") +
+  tm_shape(ash.succ.3) + tm_dots("yellow", size = 0.005) +
+  tm_shape(ash.buffer.1) + tm_polygons("#286E34") +
+  tm_shape(ash.succ.2) + tm_dots("yellow", size = 0.005) +
+  tm_shape(ash.buffer.2) + tm_polygons("#A24848") +
+  tm_shape(ash.succ.3) + tm_dots("yellow", size = 0.005) 
+```
+
+I am going to write out the buffers and new trees data in order to also inspect in QGIS. Prior to writing out we are going to `st_transform` into **3857** in order to make sure everything loads correctly.
+
+```{r 3857, results='hide'}
+new.23.3857 <- st_transform(new.23, crs = 3857)
+new.3.3857 <- st_transform(new.3, crs = 3857)
+
+st_write(new.23, "../data/creations/Ash/new.23.geojson", delete_dsn = TRUE)
+st_write(new.3, "../data/creations/Ash/new.3.geojson", delete_dsn = TRUE)
+
+ash.buffer.1.3857 <- st_transform(ash.buffer.1, crs = 3857)
+ash.buffer.2.3857 <- st_transform(ash.buffer.2, crs = 3857)
+
+st_write(ash.buffer.1.3857, "../data/creations/Ash/ash.buffer.1.geojson", delete_dsn = TRUE)
+st_write(ash.buffer.2.3857, "../data/creations/Ash/ash.buffer.2.geojson", delete_dsn = TRUE)
+```
+
+There is a dramatic difference in the number of observations present between the Knoll and Herbert run. lets do some brief descriptive statistics to ensure lack of errors. In this following chunk we will first remake the buffers but not `st_union` them into a singular MULTIPOLYGON object, then piping into a simple `st_area` then `mean` function. Additionally within this chunk I calculate the total percent of all Ash trees across all inventories which have been lost.
+
+```{r ValidationOfBuffers, results='hold'}
+nrow(d.ash.2) + nrow(d.ash.3)
+
+st_buffer(d.ash.2, dist = d.ash.2$CRZ_m_1) %>% st_area() %>% mean() %>% print()
+st_buffer(d.ash.3, dist = d.ash.3$CRZ_m_2) %>% st_area() %>% mean() %>% print()
+
+(nrow(d.ash.2) + nrow(d.ash.3)) * 100 / nrow(ash)
+```
+
+Results of this show that within the Knoll there were larger and more numerous numbers of Ash trees. After additional inspection of the Ash trees within the Herbert run section using QGIS, it appears as though this is accurate and there is very minimal succession within this region.
+
+# Result Statistics
+
+composition of successional species (list descending)
+
+```{r SuccessionStat1, warning=FALSE, results='hide'}
+succ1 <- st_drop_geometry(ash.succ.2)
+succ2 <- st_drop_geometry(ash.succ.3)
+
+succs <- full_join(succ1, succ2)
+```
+
+```{r SuccessionStat2, results='hold'}
+succs <- succs %>% select(Spec_MostRecent)
+
+succs %>% unique() %>% pull() %>% cat("-> number species observed succeeding dead ASh trees \n")
+succs %>% unique() %>% summarise(count = n()) %>% pull() %>% cat("-> number species observed succeeding dead ASh trees \n")
+```
+
+```{r PieChart}
+species_count <- succs %>%
+  group_by(Spec_MostRecent) %>%
+  summarise(count = n()) %>%
+  ungroup() %>%
+  arrange(desc(count))
+
+species_count$Spec_MostRecent <- factor(species_count$Spec_MostRecent, 
+                                        levels = species_count$Spec_MostRecent)
+
+color_palette <- viridis_pal()(20)
+
+ggplot(species_count, aes(x = "", y = count, fill = Spec_MostRecent)) +
+  geom_col(color = "black", width = 1) +
+  geom_text(data = species_count, aes(label = count), position = position_stack(vjust = 0.5), size = 3, col = "white") +
+  coord_polar("y", start = 0) +
+  labs(fill = "Species", 
+       title = "Species Dominance with Critical Root Zone of Dead Ash Trees") + 
+  scale_fill_manual(values = color_palette) +
+  theme(plot.title = element_text(hjust = 0.5),
+        theme(axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        panel.grid = element_blank(),
+        panel.background = element_rect(fill = "#ebf2ff"),
+        plot.background = element_rect(fill = "#ebf2ff"),
+        legend.background = element_rect(fill = "#ebf2ff"))) +
+  theme_void() +
+  guides(fill = guide_legend(ncol = 2))
+```
+
+# Succession Layout
+
+![Figure One: Layout depicting locations of succesional trees within critical root zone of dead ash trees](images/Ash.Succ.png)
+
+# Write-out
+
+Before using `st_write` to allow for QGIS depictions of succession, I am going to join the successional species using `st_join` in order to allow for easier mapping.
+
+```{r Writeout, warning=FALSE, message=FALSE, results='hide'}
+st_write(ash.succ.2, "../data/creations/ash/ash.succ.2.geojson", delete_dsn = TRUE)
+st_write(ash.succ.3, "../data/creations/ash/ash.succ.3.geojson", delete_dsn = TRUE)
+st_write(d.ash.2, "../data/creations/ash/d.ashes.2.geojson", delete_dsn = TRUE)
+st_write(d.ash.3, "../data/creations/ash/d.ashes.3.geojson", delete_dsn = TRUE)
+st_write(ash.buffer.1, "../data/creations/ash/ash.buffer.1.geojson", delete_dsn = TRUE)
+st_write(ash.buffer.2, "../data/creations/ash/ash.buffer.2.geojson", delete_dsn = TRUE)
+```
+
