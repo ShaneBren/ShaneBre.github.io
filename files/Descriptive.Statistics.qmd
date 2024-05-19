@@ -3,7 +3,6 @@ title: "Descriptive Statistics"
 author: "Shane Brennan"
 format: html
 editor: visual
-date: 05/15/2024
 ---
 
 # Setup
