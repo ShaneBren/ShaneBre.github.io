@@ -3,7 +3,6 @@ title: "Preprocessing"
 author: "Shane Brennan"
 format: html
 editor: visual
-date: 5/10/2024
 ---
 
 # Setup
