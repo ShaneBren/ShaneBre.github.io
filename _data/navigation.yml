@@ -6,3 +6,5 @@ main:
   - title: "Resume"
     url: /cv/
   
+  - title: "Projects"
+    url: /publications/
