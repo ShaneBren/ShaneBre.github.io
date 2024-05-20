@@ -1,9 +1,5 @@
 ---
 title: "GES486 - Ash Tree Succession"
-author: "Shane Brennan"
-format: html
-editor: visual
-date: 05/19/2024
 ---
 
 ## Introduction
