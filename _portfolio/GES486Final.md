@@ -25,15 +25,15 @@ Following all of these calculations, the data was exported in a .geojson format.
 
 Beginning with the successional model, results showed very large numbers of Ash trees dying at 428 trees disappearing - or 54.6%. As a result, there were large former critical root zones. 94 trees were identified as being new trees following the death of the Ash trees and within the critical root zone measured from the last available DBH. Analysis of these trees revealed many of the succeeding trees were in fact native trees. The top three species of succeeding Ash trees were Bitternut Hickory (24.4%), Black Cherry (15.9%), and Sugar Maple (12.7%). So one can see that these three species are dominating over half of the Ash tree succession. Going further: with the addition of the next two most dominant species of Princess tree (11.7%) and Eastern Redbud (9.5%), 75% of succession is carried out through five species. While most of these species are native - a trend true throughout all of the succeeding species - the fourth most dominant Princess tree is a non-native species. The Princess tree is of a unique concern to local biodiversity as it is a rapidly growing tree with a large leaf area which can quickly crowd out other species from growing. In addition to ecological concerns, their rapidly growing roots posed threats to infrastructure such as roads and pipes.
 
-![Figure One: Succession Layout](https://github.com/ShaneBren/ShaneBren.github.io/blob/master/images/Ash.Succ.png)
+![Figure One: Succession Layout](images/Ash.Succ.png)
 
 Additionally to show the zonal changes in DBH in centimeters is the layout below.
 
-![Figure Two: Succession Layout](https://github.com/ShaneBren/ShaneBren.github.io/blob/master/images/Ash.Succ.png)
+![Figure Two: Succession Layout](images/DBH.change.png)
 
 Analysis conducted in GeoDa between zonal mean DBH change and species richness also showed trends of interest within the forest plots. In the layout posted below, bivariate clustering analysis is displayed. Importantly one can see that the majority of the clusters identified are high-high indicating large changes in mean DBH change and species richness. Regions where this is seen the most, are typically edges or areas with high disturbance, an expected result as many trees are dying or growing in the same area with many different secondary successional species trying to take advantage of the created gaps. Importantly to note about the confidence of this model was the Morans I was low at -0.015, meaning the correlation observed is weak.
 
-![Figure Three: Clustering Layout](https://github.com/ShaneBren/ShaneBren.github.io/blob/master/images/Clustering.png)
+![Figure Three: Clustering Layout](images/Clustering.png)
 
 ## Conclusion
 
