@@ -1,5 +1,5 @@
 ---
-title: "GES486 - Ash Tree Succession"
+title: "GES486 - Ash Tree Succession Model"
 excerpt: "This project is an innovation of my previously done GES386 final project. Key improvements include smoother workflow through RStudio, cartographical production in QGIS, and analysis of clustering in GeoDA<br/><img src='/images/Ash.Succ.png'>"
 ---
 
