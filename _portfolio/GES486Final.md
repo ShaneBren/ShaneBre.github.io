@@ -45,3 +45,10 @@ As this work was conducted to try and monitor and measure the succession of Ash 
 
 Going into this project I was aware of the challenges the data would face in being able to draw strong conclusions. In being cognizant of this, I prioritized not only the creation of reproducible research methods but also made a strong effort to explain the methods being used throughout the workflow.
 
+## Workflow Documents
+
+Provided here are the four Quarto documents outlining the work done in this analysis.
+- [Preprocessing](/files/Preprocessing.qmd)
+- [Descriptive Statistics](/files/Descriptive.Statistics.qmd)
+- [Species Selection](/files/Species.Selection.qmd)
+- [Ash Succession Modeling](/files/Ash.Succession.qmd)
