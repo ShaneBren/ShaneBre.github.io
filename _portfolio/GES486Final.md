@@ -1,6 +1,6 @@
 ---
 title: "GES486 - Ash Tree Succession"
-excerpt: "This project is an innovation of my previously done GES386 final project. Key improvements include smoother workflow through RStudio, cartographical production in QGIS, and analysis of clustering in GeoDA"
+excerpt: "This project is an innovation of my previously done GES386 final project. Key improvements include smoother workflow through RStudio, cartographical production in QGIS, and analysis of clustering in GeoDA<br/><img src='/images/Ash.Succ.png'>"
 ---
 
 ## Introduction
@@ -27,9 +27,13 @@ Beginning with the successional model, results showed very large numbers of Ash 
 
 ![Figure One: Succession Layout](images/Ash.Succ.png)
 
+Additionally to show the zonal changes in DBH in centimeters is the layout below.
+
+![Figure Two: Succession Layout](images/DBH.change.png)
+
 Analysis conducted in GeoDa between zonal mean DBH change and species richness also showed trends of interest within the forest plots. In the layout posted below, bivariate clustering analysis is displayed. Importantly one can see that the majority of the clusters identified are high-high indicating large changes in mean DBH change and species richness. Regions where this is seen the most, are typically edges or areas with high disturbance, an expected result as many trees are dying or growing in the same area with many different secondary successional species trying to take advantage of the created gaps. Importantly to note about the confidence of this model was the Morans I was low at -0.015, meaning the correlation observed is weak.
 
-![Figure Two: Clustering Layout](images/Clustering.png)
+![Figure Three: Clustering Layout](images/Clustering.png)
 
 ## Conclusion
 
